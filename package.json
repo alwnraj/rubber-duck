@@ -1,0 +1,48 @@
+{
+  "name": "rubber-duck-cli",
+  "version": "1.0.0",
+  "description": "A Socratic debugging companion that asks questions instead of giving answers",
+  "main": "dist/index.js",
+  "bin": {
+    "rubber-duck": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "RELEASING.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "test": "npm run build && node --test test/**/*.test.mjs",
+    "test:watch": "npm run build && node --test --watch test/**/*.test.mjs",
+    "lint": "tsc --noEmit",
+    "lint:fix": "npm run lint",
+    "format": "node scripts/format.mjs --write",
+    "format:check": "node scripts/format.mjs --check",
+    "check": "npm run lint && npm run format:check && npm test",
+    "prepublishOnly": "npm run check"
+  },
+  "keywords": [
+    "cli",
+    "debugging",
+    "rubber-duck",
+    "copilot"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "conf": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
