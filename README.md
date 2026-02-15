@@ -93,7 +93,3 @@ npm run check
 - If `copilot` is unavailable, the CLI falls back to built-in prompts.
 - Large context/history is truncated to protect prompt size.
 - Corrupt persisted state is auto-recovered to safe defaults with warnings.
-
-## License
-
-MIT
