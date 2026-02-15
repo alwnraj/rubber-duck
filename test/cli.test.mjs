@@ -12,7 +12,33 @@ function createHome() {
 }
 
 function configPath(home) {
-  return join(home, "Library", "Preferences", "rubber-duck-nodejs", "config.json");
+  const candidates = [
+    join(home, "rubber-duck-nodejs", "config.json"),
+    join(home, ".config", "rubber-duck-nodejs", "config.json"),
+    join(home, "Library", "Preferences", "rubber-duck-nodejs", "config.json"),
+  ];
+
+  for (const candidate of candidates) {
+    if (existsSync(candidate)) {
+      return candidate;
+    }
+  }
+
+  return candidates[0];
+}
+
+function writeConfigToAllCandidatePaths(home, payload) {
+  const candidates = [
+    join(home, "rubber-duck-nodejs", "config.json"),
+    join(home, ".config", "rubber-duck-nodejs", "config.json"),
+    join(home, "Library", "Preferences", "rubber-duck-nodejs", "config.json"),
+  ];
+
+  const text = JSON.stringify(payload);
+  for (const candidate of candidates) {
+    mkdirSync(dirname(candidate), { recursive: true });
+    writeFileSync(candidate, text, "utf-8");
+  }
 }
 
 function runCli(args, options = {}) {
@@ -22,6 +48,8 @@ function runCli(args, options = {}) {
     env: {
       ...process.env,
       HOME: home,
+      XDG_CONFIG_HOME: home,
+      XDG_DATA_HOME: home,
     },
     input: options.input,
     encoding: "utf-8",
@@ -135,18 +163,12 @@ test("json output includes provider_result event", () => {
 
 test("corrupt stats config is recovered with warning", () => {
   const home = createHome();
-  const cfg = configPath(home);
-  mkdirSync(dirname(cfg), { recursive: true });
-  writeFileSync(
-    cfg,
-    JSON.stringify({
+  writeConfigToAllCandidatePaths(home, {
       configVersion: 1,
       stats: { bad: true },
       session: null,
       sessions: [],
-    }),
-    "utf-8"
-  );
+  });
 
   const res = runCli(["--non-interactive", "--output", "json", "--stats"], { home });
   assert.equal(res.code, 0);

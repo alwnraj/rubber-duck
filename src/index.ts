@@ -322,6 +322,13 @@ async function exportSession(path: string, session: Session, force: boolean): Pr
   }
 }
 
-program.parse();
+program.parseAsync().then(() => {
+  // Force process to exit to prevent hanging on lingering async operations
+  // This is particularly important in CI environments where file watchers
+  // or other async operations might keep the event loop alive
+  if (process.exitCode !== undefined) {
+    process.exit(process.exitCode);
+  }
+});
 
 export { run };
