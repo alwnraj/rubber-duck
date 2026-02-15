@@ -2,6 +2,7 @@
   "name": "rubber-duck-cli",
   "version": "1.0.0",
   "description": "A Socratic debugging companion that asks questions instead of giving answers",
+  "type": "module",
   "main": "dist/index.js",
   "bin": {
     "rubber-duck": "dist/index.js"
